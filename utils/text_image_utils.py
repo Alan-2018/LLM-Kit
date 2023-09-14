@@ -1,3 +1,4 @@
+import copy
 import gradio as gr
 import requests
 import json
@@ -195,4 +196,65 @@ class TextImage:
             print(e)
             raise gr.Error(str(e))
             
+    def upload_attachment(self):
+        '''
+        '''
+        if self.channel_id is None or self.authorization is None or self.application_id is None or self.guild_id is None or self.session_id is None or self.version is None or self.id is None or self.flags is None:
+            raise gr.Error("请填写完整参数")
         
+        filename: str = ''
+        file_size: int = 0
+        image: bytes = bytes(b'')
+
+        payload = {
+            "files": [{
+                "filename": filename,
+                "file_size": file_size,
+                "id": "0"
+            }]
+        }
+
+        header = copy.deepcopy(self.header)
+        header["Content-Type"] = "application/json"
+
+        try:
+            r = requests.post(f"https://discord.com/api/v9/channels/{self.channel_id}/attachments",
+                            json=payload,
+                            headers=header)
+            # while r.status_code != 204:
+            #     r = requests.post(f"https://discord.com/api/v9/channels/{self.channel_id}/attachments",
+            #                     json=payload,
+            #                     headers=header)
+
+            if r.status_code >= 400:
+                raise Exception('http conn exception')
+
+            response = r.json()
+            if not response or not response.get("attachments"):
+                raise Exception('http conn exception')
+
+            attachment = response["attachments"][0]
+
+            response = await put_attachment(attachment.get("upload_url"), image)
+
+            headers = {"Content-Type": "image/png"}
+
+
+            return attachment if response is not None else None
+
+
+
+        except Exception as e:
+            print(e)
+            raise gr.Error(str(e))
+
+
+
+
+
+        
+        
+
+        
+
+
