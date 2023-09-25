@@ -2,6 +2,7 @@ import gradio as gr
 from ui.apply_video import Avtar
 from ui.apply_knowledge import apply_knowledge
 from ui.apply_text_image_generation import apply_text_image_generation
+from ui.apply_image_text_generation import apply_image_text_generation
 
 def apply_page(localizer):
     with gr.Tab(localizer("角色扮演")) as avatar_tab:
@@ -11,3 +12,5 @@ def apply_page(localizer):
         apply_knowledge(localizer)
     with gr.Tab(localizer('文生图')):
         apply_text_image_generation(localizer)
+    # with gr.Tab(localizer('图生文')):
+    #     apply_image_text_generation(localizer)
